@@ -2,6 +2,7 @@ import React , { useEffect , useState } from "react";
 import './App.css';
 import Navbar from "./component/nav";
 import Login from "./component/login";
+import ForgotyourPassword from "./component/forgot-you-password";
 import {
     Routes,
     Route
@@ -12,15 +13,18 @@ import { onAuthStateChanged } from "firebase/auth";
 
 function App() {
 
-    const [ user , setUser ]  = useState(null);
+    const [ user , setUser ]  = useState(null); 
+    
 
     useEffect(() => {
-        onAuthStateChanged(auth, (usuario) => {
-            if (usuario) {
-                setUser(usuario.email);
+	    onAuthStateChanged(auth, (usuario) => {	    
+	if(usuario){
+            if (usuario.emailVerified) {
+		setUser(usuario.email);
 	    }else{
 		setUser(null)
 	    }
+	}	
         })
     }, [])
 
@@ -34,9 +38,10 @@ function App() {
 		user ? (
 		    <Route path="/admin" element ={ <h1>Usuario</h1> }/>
 		):(
-		    <Route path="*" element = { <h1>Not Found</h1> } />
+		    <Route path="no-access" element = { <h1>No Access</h1> } />
 		)
 	    }
+		    <Route path="/forgot-your-password" element = { <ForgotyourPassword /> } />    
 	    <Route path="*" element = { <h1>Not Found</h1> } />
 	</Routes>
     </div>
